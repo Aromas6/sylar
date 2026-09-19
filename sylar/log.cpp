@@ -44,4 +44,35 @@ void Logger::fatal(LogEvent::ptr event) {
     debug(LogLevel::FATAL, event);
 }
 
+FileLogAppender::FileLogAppender(const std::string& filename)
+    : m_filename(filename) {
+}
+
+void FileLogAppender::log(LogLevel level, LogEvent::ptr event) {
+    if (level >= m_level)
+    {
+        m_filestream << m_formatter.format(event);
+    }
+    
+}
+
+void FileLogAppender::reopen() {
+    if (m_filestream)
+    {
+        m_filestream.close();
+    }
+    m_filestream.open(m_filename);
+
+    // !!将非0值转为1 0值还是0
+    return !!m_filestream;
+}
+
+void StdoutLogAppender::log(LogLevel level, LogEvent::ptr event) {
+    if (level >= m_level)
+    {
+        std::cout << m_formatter.format(event);
+    }
+    
+}
+
 }
